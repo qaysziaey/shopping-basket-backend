@@ -10,7 +10,6 @@ const {
   getAllProducts,
   getProductById,
 } = require("./controllers/productController");
-const { default: mongoose } = require("mongoose");
 
 const app = express();
 app.use(cors());
