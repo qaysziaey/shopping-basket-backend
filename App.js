@@ -1,6 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const connect = require("./lib/connectDB");
+const User = require("./model/User");
+const Product = require("./model/Product");
+
+const { createNewUser } = require("./controllers/userController");
+const {
+  getAllProducts,
+  getProductById,
+} = require("./controllers/productController");
+const { default: mongoose } = require("mongoose");
 
 const app = express();
 app.use(cors());
@@ -8,11 +18,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+// Get all products
+app.get("/products", getAllProducts);
+
+// Get a single Product by id
+app.get("/products/:productId", getProductById);
+
+// Create new user
+// app.post("/users/user", async (req, res) => {
+//   await connect();
+//   const { userName, email, password, profileImg } = req.body;
+//   const user = new User({
+//     userName,
+//     email,
+//     password,
+//     profileImg,
+//   });
+//   await user.save();
+//   return res.json(user);
+// });
+
+// Get all user
+app.get("/users", async (req, res) => {
+  await connect();
+  const user = await User.find({});
+  return res.json(user);
 });
 
-module.exports = app;
 const server = app.listen(PORT, () =>
   console.log(`Express app listening on port ${PORT}!`)
 );
