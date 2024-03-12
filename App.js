@@ -7,6 +7,7 @@ const Product = require("./model/Product");
 
 const { createNewUser } = require("./controllers/userController");
 const {
+  createNewProduct,
   getAllProducts,
   getProductById,
 } = require("./controllers/productController");
@@ -24,6 +25,10 @@ app.get("/", (req, res) => {
     api: "http://localhost:3000/products",
   });
 });
+
+// Create new Product
+app.post("/products/newProduct", createNewProduct);
+
 // Get all products
 app.get("/products", getAllProducts);
 

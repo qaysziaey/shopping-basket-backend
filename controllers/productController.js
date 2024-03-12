@@ -10,12 +10,68 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Create a new Product
+const createNewProduct = async (req, res) => {
+  await connect();
+  const {
+    productName,
+    description,
+    price,
+    availableInStock,
+    thumbnail,
+    size,
+    color,
+    delivery,
+    category,
+    rating,
+    vatText,
+    about,
+  } = req.body;
+
+  try {
+    if (
+      !productName ||
+      !description ||
+      !price ||
+      !availableInStock ||
+      !thumbnail ||
+      !size ||
+      !color ||
+      !delivery ||
+      !category ||
+      !rating ||
+      !vatText ||
+      !about
+    ) {
+      return res.status(400).send({ message: "All fields are required" });
+    }
+    const newProduct = {
+      productName,
+      description,
+      price,
+      availableInStock,
+      thumbnail,
+      size,
+      color,
+      delivery,
+      category,
+      rating,
+      vatText,
+      about,
+    };
+    const product = await Product.create(newProduct);
+    return res.status(201).json({ product: product });
+  } catch (err) {
+    return res.status(400).json({ message: "Product can not be created." });
+  }
+};
+
 // Get all products
 const getAllProducts = async (req, res) => {
   await connect();
-  const product = await Product.find({});
+  const product = await Product.find();
   //   console.log(data);
-  return res.json({ numberOfProducts: product.length, product });
+  return res.json({ product });
 };
 
 // Get a single Product by id
@@ -39,4 +95,4 @@ const getProductById = async (req, res) => {
   }
 };
 
-module.exports = { getAllProducts, getProductById };
+module.exports = { createNewProduct, getAllProducts, getProductById };
