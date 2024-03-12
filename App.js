@@ -36,18 +36,18 @@ app.get("/products", getAllProducts);
 app.get("/products/:productId", getProductById);
 
 // Create new user
-// app.post("/users/user", async (req, res) => {
-//   await connect();
-//   const { userName, email, password, profileImg } = req.body;
-//   const user = new User({
-//     userName,
-//     email,
-//     password,
-//     profileImg,
-//   });
-//   await user.save();
-//   return res.json(user);
-// });
+app.post("/users/user", async (req, res) => {
+  await connect();
+  const { userName, email, password, profileImg } = req.body;
+  const user = new User({
+    userName,
+    email,
+    password,
+    profileImg,
+  });
+  await user.save();
+  return res.json(user);
+});
 
 // Get all user
 app.get("/users", async (req, res) => {

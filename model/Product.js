@@ -62,7 +62,6 @@ const ProductSchema = new Schema(
 );
 
 // model the collection
-
 const Product =
   mongoose.models.Product || mongoose.model("Product", ProductSchema);
 
