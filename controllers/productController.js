@@ -10,6 +10,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Establish the database connection once when the server starts
+connect();
+
 // Create a new Product
 const createNewProduct = async (req, res) => {
   await connect();
@@ -27,52 +30,26 @@ const createNewProduct = async (req, res) => {
     vatText,
     about,
   } = req.body;
-
-  // console.log(
-  //   `Product:${productName}, Description: ${description}, Prise:${price}, In Stock:${availableInStock}, Thumbnail:${thumbnail},Size: ${size},Color: ${color}, Delivery:${delivery},Catagory: ${category}, Rating, ${rating}, VAT: ${vatText}, About ${about}`
-  // );
-
-  try {
-    if (
-      !productName ||
-      !description ||
-      !price ||
-      !availableInStock ||
-      !thumbnail ||
-      !size ||
-      !color ||
-      !delivery ||
-      !category ||
-      !rating ||
-      !vatText ||
-      !about
-    ) {
-      return res.status(400).send({ message: "All fields are required" });
-    }
-    const newProduct = {
-      productName,
-      description,
-      price,
-      availableInStock,
-      thumbnail,
-      size,
-      color,
-      delivery,
-      category,
-      rating,
-      vatText,
-      about,
-    };
-    const product = await Product.create(newProduct);
-    return res.status(201).json(product);
-  } catch (err) {
-    return res.status(400).json({ message: "Product can not be created." });
-  }
+  const product = new Product({
+    productName,
+    description,
+    price,
+    availableInStock,
+    thumbnail,
+    size,
+    color,
+    delivery,
+    category,
+    rating,
+    vatText,
+    about,
+  });
+  await product.save();
+  return res.json(product);
 };
 
 // Get all products
 const getAllProducts = async (req, res) => {
-  await connect();
   const product = await Product.find();
   //   console.log(data);
   return res.json({ product });
@@ -80,8 +57,6 @@ const getAllProducts = async (req, res) => {
 
 // Get a single Product by id
 const getProductById = async (req, res) => {
-  await connect();
-
   const { productId } = req.params;
   console.log(productId);
 

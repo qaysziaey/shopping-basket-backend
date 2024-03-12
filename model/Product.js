@@ -35,7 +35,7 @@ const ProductSchema = new Schema(
         required: true,
       },
     ],
-    deliver: {
+    delivery: {
       type: String,
       required: true,
     },

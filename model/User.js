@@ -5,7 +5,7 @@ const UserSchema = new Schema({
   userName: { type: String, required: true },
   password: { type: String, required: true },
   email: { type: String, required: true },
-  profileImg: { type: String, default: "default.png" },
+  profile: { type: String, default: "default.png" },
   cartItem: [{ product: { type: Schema.Types.ObjectId, ref: "Product" } }],
 });
 
