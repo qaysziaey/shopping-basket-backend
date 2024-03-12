@@ -28,6 +28,10 @@ const createNewProduct = async (req, res) => {
     about,
   } = req.body;
 
+  // console.log(
+  //   `Product:${productName}, Description: ${description}, Prise:${price}, In Stock:${availableInStock}, Thumbnail:${thumbnail},Size: ${size},Color: ${color}, Delivery:${delivery},Catagory: ${category}, Rating, ${rating}, VAT: ${vatText}, About ${about}`
+  // );
+
   try {
     if (
       !productName ||
@@ -60,7 +64,7 @@ const createNewProduct = async (req, res) => {
       about,
     };
     const product = await Product.create(newProduct);
-    return res.status(201).json({ product: product });
+    return res.status(201).json(product);
   } catch (err) {
     return res.status(400).json({ message: "Product can not be created." });
   }
@@ -69,9 +73,9 @@ const createNewProduct = async (req, res) => {
 // Get all products
 const getAllProducts = async (req, res) => {
   await connect();
-  const product = await Product.find();
+  const products = await Product.find();
   //   console.log(data);
-  return res.json({ product });
+  return res.json({ products });
 };
 
 // Get a single Product by id

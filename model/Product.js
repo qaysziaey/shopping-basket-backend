@@ -12,7 +12,7 @@ const ProductSchema = new Schema(
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
     },
     availableInStock: {
@@ -21,25 +21,17 @@ const ProductSchema = new Schema(
     },
     thumbnail: {
       type: String,
-      default: "default.png",
+      required: true,
     },
     size: [
       {
         type: String,
         required: true,
       },
-      {
-        type: Number,
-        required: true,
-      },
     ],
     color: [
       {
         type: String,
-        required: true,
-      },
-      {
-        type: Number,
         required: true,
       },
     ],
@@ -49,6 +41,10 @@ const ProductSchema = new Schema(
     },
     category: {
       type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
       required: true,
     },
     vatText: {
