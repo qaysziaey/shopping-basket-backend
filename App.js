@@ -18,6 +18,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 3000;
 
+// Welcome screen
+app.get("/", (req, res) => {
+  res.send({
+    message: "Welcome to our API",
+    api: "http://localhost:3000/products",
+  });
+});
 // Get all products
 app.get("/products", getAllProducts);
 
