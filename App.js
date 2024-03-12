@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 });
 
 // Create new Product
-app.post("/products/", createNewProduct);
+app.post("/products/product", createNewProduct);
 
 // Get all products
 app.get("/products", getAllProducts);
