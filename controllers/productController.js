@@ -51,15 +51,9 @@ const createNewProduct = async (req, res) => {
 // Get all products
 const getAllProducts = async (req, res) => {
   await connect();
-  try {
-    const products = await Product.find({});
-    if (!products) {
-      return res.json({ message: "Product not found." });
-    }
-    return res.json(products);
-  } catch (error) {
-    res.status(500).send({ message: "User not found" });
-  }
+  const product = await Product.find({});
+  //   console.log(data);
+  return res.json({ product });
 };
 
 // Get a single Product by id
