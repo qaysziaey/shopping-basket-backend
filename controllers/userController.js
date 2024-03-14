@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const User = require("../model/User");
-const Product = require("../model/Product");
+const User = require("../model/Users");
+const Product = require("../model/Products");
 const connect = require("../lib/connectDB");
 const mongoose = require("mongoose");
 
