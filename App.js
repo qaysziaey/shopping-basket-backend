@@ -38,9 +38,9 @@ app.get("/products/:productId", getProductById);
 // Create new user
 app.post("/users/user", async (req, res) => {
   await connect();
-  const { userName, email, password, profileImg } = req.body;
+  const { username, email, password, profileImg } = req.body;
   const user = new User({
-    userName,
+    username,
     email,
     password,
     profileImg,
