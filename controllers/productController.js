@@ -44,8 +44,9 @@ const createNewProduct = async (req, res) => {
     vatText,
     about,
   });
-  await product.save();
-  return res.json(product);
+  const newProduct = await Product.create(product);
+
+  return res.json(newProduct);
 };
 
 // Get all products
