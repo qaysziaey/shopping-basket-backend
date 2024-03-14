@@ -52,9 +52,9 @@ const createNewProduct = async (req, res) => {
 // Get all products
 const getAllProducts = async (req, res) => {
   await connect();
-  const { product } = await Product.find({});
+  const product = await Product.find({});
   //   console.log(data);
-  return res.json(product);
+  return res.json({ product });
 };
 
 // Get a single Product by id
