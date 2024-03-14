@@ -26,6 +26,12 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/products/product", async (req, res) => {
+  await connect();
+  const product = await Product.find({});
+  return res.json({ product });
+});
+
 // Create new Product
 app.post("/products/product", createNewProduct);
 
