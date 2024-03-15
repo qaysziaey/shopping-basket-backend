@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Establish the database connection once when the server starts
-connect();
+// connect();
 
 // Create a new Product
 const createNewProduct = async (req, res) => {
@@ -52,9 +52,13 @@ const createNewProduct = async (req, res) => {
 // Get all products
 const getAllProducts = async (req, res) => {
   await connect();
-  const product = await Product.find({});
-  //   console.log(data);
-  return res.json({ product });
+  try {
+    const product = await Product.find({});
+    console.log(product);
+    return res.json({ product });
+  } catch (err) {
+    res.status(500).send({ message: "Product not found" });
+  }
 };
 
 // Get a single Product by id
