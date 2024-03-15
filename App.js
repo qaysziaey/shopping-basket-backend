@@ -5,18 +5,17 @@ const connect = require("./lib/connectDB");
 const User = require("./model/Users");
 const Product = require("./model/Products");
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 3000;
 const { createNewUser } = require("./controllers/userController");
 const {
   createNewProduct,
   getAllProducts,
   getProductById,
 } = require("./controllers/productController");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-const PORT = process.env.PORT || 3000;
 
 // Welcome screen
 app.get("/", (req, res) => {
