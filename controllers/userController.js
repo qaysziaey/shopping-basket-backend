@@ -9,10 +9,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+connect(); // Database connection
 
 // Create new user
 const createNewUser = async (req, res) => {
-  await connect();
   try {
     const { userName, email, password, profileImg } = req.body;
     const user = new User({
@@ -30,7 +30,6 @@ const createNewUser = async (req, res) => {
 
 // Get all Users
 const getAllUsers = async (req, res) => {
-  await connect();
   try {
     const user = await User.find({});
     return res.json(user);

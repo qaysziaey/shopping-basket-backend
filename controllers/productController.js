@@ -10,8 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Establish the database connection once when the server starts
-connect();
+connect(); // Database connection
 
 // Welcome screen
 const welcomeScreen = (req, res) => {
