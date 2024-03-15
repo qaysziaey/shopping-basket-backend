@@ -58,3 +58,11 @@ const server = app.listen(PORT, () =>
 
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;
+
+// API Endpoints
+// https://shopping-basket-backend-u4xp.onrender.com
+// https://shopping-basket-backend-u4xp.onrender.com/products
+// https://shopping-basket-backend-u4xp.onrender.com/users/user
+// https://shopping-basket-backend-u4xp.onrender.com/users
+// https://shopping-basket-backend-u4xp.onrender.com/users/:userId
+// https://shopping-basket-backend-u4xp.onrender.com/users/:userId/product/:productId

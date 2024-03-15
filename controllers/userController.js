@@ -78,7 +78,7 @@ const addProductToBasket = async (req, res) => {
     }
     user.cartItem.push({
       product: {
-        _id: product._id,
+        id: product._id,
         productName: product.productName,
         price: product.price,
         quantity: cartItem.quantity,
