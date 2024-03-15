@@ -58,6 +58,8 @@ const getUserById = async (req, res) => {
 // Add product to cart
 const addProductToBasket = async (req, res) => {
   const { userId, productId } = req.params;
+  const { cartItem } = req.body;
+
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(404).send({ message: "User not found." }).end();
   }
@@ -69,7 +71,19 @@ const addProductToBasket = async (req, res) => {
     if (!user) {
       return res.json({ message: "User not found." });
     }
-    user.cartItem.push({ product: productId });
+    // Get the product from the database
+    const product = await Product.findById({ _id: productId });
+    if (!product) {
+      return res.json({ message: "Product not found." });
+    }
+    user.cartItem.push({
+      product: {
+        _id: product._id,
+        productName: product.productName,
+        price: product.price,
+        quantity: cartItem.quantity,
+      },
+    });
     await user.save();
     return res.json(user);
   } catch (error) {
