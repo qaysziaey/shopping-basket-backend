@@ -56,4 +56,31 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { createNewUser, getAllUsers, getUserById };
+// Add product to cart
+const addProductToBasket = async (req, res) => {
+  const { userId, productId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(404).send({ message: "User not found." }).end();
+  }
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(404).send({ message: "Product not found." }).end();
+  }
+  try {
+    const user = await User.findById({ _id: userId });
+    if (!user) {
+      return res.json({ message: "User not found." });
+    }
+    user.cartItem.push({ product: productId });
+    await user.save();
+    return res.json(user);
+  } catch (error) {
+    res.status(500).send({ message: "User not found" });
+  }
+};
+
+module.exports = {
+  createNewUser,
+  getAllUsers,
+  getUserById,
+  addProductToBasket,
+};

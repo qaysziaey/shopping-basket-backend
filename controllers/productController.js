@@ -60,6 +60,23 @@ const createNewProduct = async (req, res) => {
   }
 };
 
+// Delete a Product
+const deleteProduct = async (req, res) => {
+  const { productId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(404).send({ message: "Product not found." }).end();
+  }
+  try {
+    const product = await Product.findByIdAndDelete({ _id: productId });
+    if (!product) {
+      return res.json({ message: "Product not found." });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).send({ message: "Product not found" });
+  }
+};
+
 // Get all products
 const getAllProducts = async (_, res) => {
   try {
@@ -110,6 +127,7 @@ const getProductByName = async (req, res) => {
 module.exports = {
   welcomeScreen,
   createNewProduct,
+  deleteProduct,
   getAllProducts,
   getProductById,
   getProductByName,

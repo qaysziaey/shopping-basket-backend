@@ -1,8 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const connect = require("./lib/connectDB");
-const Product = require("./model/Products");
 
 const app = express();
 app.use(cors());
@@ -13,10 +11,12 @@ const {
   createNewUser,
   getAllUsers,
   getUserById,
+  addProductToBasket,
 } = require("./controllers/userController");
 const {
   createNewProduct,
   getAllProducts,
+  deleteProduct,
   getProductById,
   welcomeScreen,
   getProductByName,
@@ -27,6 +27,9 @@ app.get("/", welcomeScreen);
 
 // Create new Product
 app.post("/products/product", createNewProduct);
+
+// Delete a Product
+app.delete("/products/product/:productId", deleteProduct);
 
 // Get all products
 app.get("/products", getAllProducts);
@@ -45,6 +48,9 @@ app.get("/users", getAllUsers);
 
 // Get user By id
 app.get("/users/:userId", getUserById);
+
+// Add product to basket
+app.post("/users/:userId/product/:productId", addProductToBasket);
 
 const server = app.listen(PORT, () =>
   console.log(`Express app listening on port ${PORT}!`)
