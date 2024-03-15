@@ -10,7 +10,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 3000;
-const { createNewUser } = require("./controllers/userController");
+const {
+  createNewUser,
+  getAllUsers,
+  getUserById,
+} = require("./controllers/userController");
 const {
   createNewProduct,
   getAllProducts,
@@ -41,25 +45,13 @@ app.get("/products", getAllProducts);
 app.get("/products/:productId", getProductById);
 
 // Create new user
-app.post("/users/user", async (req, res) => {
-  await connect();
-  const { username, email, password, profileImg } = req.body;
-  const user = new User({
-    username,
-    email,
-    password,
-    profileImg,
-  });
-  await user.save();
-  return res.json(user);
-});
+app.post("/users/user", createNewUser);
 
 // Get all user
-app.get("/users", async (req, res) => {
-  await connect();
-  const user = await User.find({});
-  return res.json(user);
-});
+app.get("/users", getAllUsers);
+
+// Get user By id
+app.get("/users/:userId", getUserById);
 
 const server = app.listen(PORT, () =>
   console.log(`Express app listening on port ${PORT}!`)

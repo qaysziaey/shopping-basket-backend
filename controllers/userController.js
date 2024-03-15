@@ -10,17 +10,50 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Create new user
 const createNewUser = async (req, res) => {
   await connect();
-  const { userName, email, password, profileImg } = req.body;
-  const user = new User({
-    userName,
-    email,
-    password,
-    profileImg,
-  });
-  await user.save();
-  return res.json(user);
+  try {
+    const { userName, email, password, profileImg } = req.body;
+    const user = new User({
+      userName,
+      email,
+      password,
+      profileImg,
+    });
+    await user.save();
+    return res.json(user);
+  } catch (err) {
+    res.status(500).send({ message: "User can not be created." });
+  }
 };
 
-module.exports = { createNewUser };
+// Get all Users
+const getAllUsers = async (req, res) => {
+  await connect();
+  try {
+    const user = await User.find({});
+    return res.json(user);
+  } catch (err) {
+    res.status(500).send({ message: "User not found." });
+  }
+};
+
+// Get a single User by id
+const getUserById = async (req, res) => {
+  const { userId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(404).send({ message: "User not found." }).end();
+  }
+  try {
+    const user = await User.findById({ _id: userId });
+    if (!user) {
+      return res.json({ message: "User not found." });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).send({ message: "User not found" });
+  }
+};
+
+module.exports = { createNewUser, getAllUsers, getUserById };
