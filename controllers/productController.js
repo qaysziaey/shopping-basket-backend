@@ -54,7 +54,7 @@ const getAllProducts = async (req, res) => {
   await connect();
   try {
     const product = await Product.find({});
-    console.log(product);
+    // console.log(product);
     return res.json({ product });
   } catch (err) {
     res.status(500).send({ message: "Product not found" });
