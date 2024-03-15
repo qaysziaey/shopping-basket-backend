@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connect = require("./lib/connectDB");
-const User = require("./model/Users");
 const Product = require("./model/Products");
 
 const app = express();
@@ -19,21 +18,12 @@ const {
   createNewProduct,
   getAllProducts,
   getProductById,
+  welcomeScreen,
+  getProductByName,
 } = require("./controllers/productController");
 
 // Welcome screen
-app.get("/", (req, res) => {
-  res.send({
-    message: "Welcome to our API",
-    api: "http://localhost:3000/products",
-  });
-});
-
-app.get("/products/product", async (req, res) => {
-  await connect();
-  const product = await Product.find({});
-  return res.json({ product });
-});
+app.get("/", welcomeScreen);
 
 // Create new Product
 app.post("/products/product", createNewProduct);
@@ -43,6 +33,9 @@ app.get("/products", getAllProducts);
 
 // Get a single Product by id
 app.get("/products/:productId", getProductById);
+
+// Get a single Product by name
+app.get("/products/:productName", getProductByName);
 
 // Create new user
 app.post("/users/user", createNewUser);

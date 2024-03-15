@@ -11,50 +11,59 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Establish the database connection once when the server starts
-// connect();
+connect();
+
+// Welcome screen
+const welcomeScreen = (req, res) => {
+  res.send({
+    message: "Welcome to our Shopping Basket API",
+    API: "https://shopping-basket-backend-u4xp.onrender.com/products",
+  });
+};
 
 // Create a new Product
 const createNewProduct = async (req, res) => {
-  await connect();
-  const {
-    productName,
-    description,
-    price,
-    availableInStock,
-    thumbnail,
-    size,
-    color,
-    delivery,
-    category,
-    rating,
-    vatText,
-    about,
-  } = req.body;
-  const product = new Product({
-    productName,
-    description,
-    price,
-    availableInStock,
-    thumbnail,
-    size,
-    color,
-    delivery,
-    category,
-    rating,
-    vatText,
-    about,
-  });
-  const newProduct = await Product.create(product);
+  try {
+    const {
+      productName,
+      description,
+      price,
+      availableInStock,
+      thumbnail,
+      size,
+      color,
+      delivery,
+      category,
+      rating,
+      vatText,
+      about,
+    } = req.body;
+    const product = new Product({
+      productName,
+      description,
+      price,
+      availableInStock,
+      thumbnail,
+      size,
+      color,
+      delivery,
+      category,
+      rating,
+      vatText,
+      about,
+    });
+    const newProduct = await Product.create(product);
 
-  return res.json(newProduct);
+    return res.json(newProduct);
+  } catch (err) {
+    res.status(500).send({ message: "Product can not be created." });
+  }
 };
 
 // Get all products
-const getAllProducts = async (req, res) => {
-  await connect();
+const getAllProducts = async (_, res) => {
   try {
     const product = await Product.find({});
-    // console.log(product);
     return res.json({ product });
   } catch (err) {
     res.status(500).send({ message: "Product not found" });
@@ -64,7 +73,6 @@ const getAllProducts = async (req, res) => {
 // Get a single Product by id
 const getProductById = async (req, res) => {
   const { productId } = req.params;
-  console.log(productId);
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(404).send({ message: "Product not found." }).end();
@@ -80,4 +88,29 @@ const getProductById = async (req, res) => {
   }
 };
 
-module.exports = { createNewProduct, getAllProducts, getProductById };
+// Get a single Product by Name
+const getProductByName = async (req, res) => {
+  const { productName } = req.params;
+  if (!productName) {
+    return res.status(404).send({ message: "Product not found." }).end();
+  }
+  try {
+    const productDetails = await Product.findOne({
+      productName: { $regex: productName, $options: "i" },
+    });
+    if (!productDetails) {
+      return res.json({ message: "Product not found." });
+    }
+    res.json(productDetails);
+  } catch (error) {
+    res.status(500).send({ message: "Product not found" });
+  }
+};
+
+module.exports = {
+  welcomeScreen,
+  createNewProduct,
+  getAllProducts,
+  getProductById,
+  getProductByName,
+};
