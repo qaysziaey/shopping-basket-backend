@@ -77,28 +77,28 @@ const addProductToBasket = async (req, res) => {
       return res.json({ message: "Product not found." });
     }
 
-    user.updateOne(
-      { _id: userId },
-      {
-        $push: {
-          product: {
-            id: product._id,
-            productName: product.productName,
-            price: product.price,
-            quantity: cartItem.quantity,
-          },
-        },
-      }
-    );
+    // user.updateOne(
+    //   { _id: userId },
+    //   {
+    //     $push: {
+    //       product: {
+    //         id: product._id,
+    //         productName: product.productName,
+    //         price: product.price,
+    //         quantity: cartItem.quantity,
+    //       },
+    //     },
+    //   }
+    // );
 
-    // user.cartItem.push({
-    //   product: {
-    //     id: product._id,
-    //     productName: product.productName,
-    //     price: product.price,
-    //     quantity: cartItem.quantity,
-    //   },
-    // });
+    user.cartItem.push({
+      product: {
+        id: product._id,
+        productName: product.productName,
+        price: product.price,
+        quantity: cartItem.quantity,
+      },
+    });
     await user.save();
     return res.json(user);
   } catch (error) {
