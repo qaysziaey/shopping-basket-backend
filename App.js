@@ -23,6 +23,8 @@ const {
   getProductByName,
 } = require("./controllers/productController");
 
+const { createNewSale, getAllSales } = require("./controllers/salesController");
+
 // Welcome screen
 app.get("/", welcomeScreen);
 
@@ -55,6 +57,12 @@ app.post("/users/:userId/product/:productId", addProductToBasket);
 
 // Remove product from basket
 app.delete("/user/:userId/product/:productId", removeProductFromBasket);
+
+// Create new sale
+app.post("/sales/sale", createNewSale);
+
+// Get all sales
+app.get("/sales", getAllSales);
 
 const server = app.listen(PORT, () =>
   console.log(`Express app listening on port ${PORT}!`)
