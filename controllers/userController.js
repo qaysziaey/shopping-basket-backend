@@ -46,7 +46,9 @@ const getUserById = async (req, res) => {
     return res.status(404).send({ message: "User not found." }).end();
   }
   try {
-    const user = await User.findById({ _id: userId });
+    const user = await User.findById({ _id: userId }).populate(
+      "cartItem.product"
+    );
     if (!user) {
       return res.json({ message: "User not found." });
     }
@@ -100,34 +102,41 @@ const addProductToBasket = async (req, res) => {
   }
 };
 
-// Detelete product from cart
-const deleteProductFromBasket = async (req, res) => {
+// Remove product from cart
+
+const removeProductFromBasket = async (req, res) => {
   const { userId, productId } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(404).send({ message: "User not found." }).end();
-  }
-  if (!mongoose.Types.ObjectId.isValid(productId)) {
-    return res.status(404).send({ message: "Product not found." }).end();
-  }
+
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.json({ message: "User not found." });
     }
-    // Get the product from the database using the productId
-    const product = await Product.findById(productId);
 
-    if (!product) {
-      return res.json({ message: "Product not found." });
+    const indexToRemove = user.cartItem.findIndex(
+      (item) => item.product.toString() === productId
+    );
+    if (indexToRemove === -1) {
+      return res.json({ message: "Product not found in the cart." });
     }
+
+    user.cartItem.splice(indexToRemove, 1); // Remove 1 item at indexToRemove
+    await user.save();
+
+    const updatedUser = await User.findById(userId).populate("cartItem");
+
+    return res.json({
+      numOfProducts: updatedUser.cartItem.length,
+      cartItems: updatedUser.cartItem,
+    });
   } catch (error) {
     res.status(500).send({ message: "Error occurred." });
   }
 };
-
 module.exports = {
   createNewUser,
   getAllUsers,
   getUserById,
   addProductToBasket,
+  removeProductFromBasket,
 };
