@@ -61,8 +61,6 @@ const getUserById = async (req, res) => {
 // Add product to cart
 const addProductToBasket = async (req, res) => {
   const { userId, productId } = req.params;
-  // const { cartItem } = req.body;
-  const cartItem = await User.findById({ _id: userId }).populate("cartItem");
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(404).send({ message: "User not found." }).end();
@@ -70,32 +68,38 @@ const addProductToBasket = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(404).send({ message: "Product not found." }).end();
   }
+
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.json({ message: "User not found." });
     }
+
     // Get the product from the database using the productId
     const product = await Product.findById(productId);
 
     if (!product) {
       return res.json({ message: "Product not found." });
     }
-    // check if the product is available in the stock
-    // if (product.availableInStock < 1) {
-    //   return res
-    //     .status(400)
-    //     .send({ message: "Product is not available in the stock." });
-    // }
 
     // Add the product to the cart
     user.cartItem.push({
       product: productId,
     });
     await user.save();
+
+    // Populate cart items with product details
+    const updatedCart = await User.findById(userId).populate("cartItem");
+
+    if (updatedCart.cartItem.length === 0) {
+      return res.json({
+        message: "Basket is empty, please add products to it!",
+      });
+    }
+
     return res.json({
-      numOfProducts: cartItem.length,
-      cartItems: cartItem,
+      numOfProducts: updatedCart.cartItem.length,
+      cartItems: updatedCart.cartItem,
     });
   } catch (error) {
     res.status(500).send({ message: "Error occurred." });
