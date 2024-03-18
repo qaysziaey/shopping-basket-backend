@@ -14,9 +14,9 @@ connect(); // Database connection
 // Create new user
 const createNewUser = async (req, res) => {
   try {
-    const { userName, email, password, profileImg } = req.body;
+    const { username, email, password, profileImg } = req.body;
     const user = new User({
-      userName,
+      username,
       email,
       password,
       profileImg,
@@ -31,7 +31,7 @@ const createNewUser = async (req, res) => {
 // Get all Users
 const getAllUsers = async (req, res) => {
   try {
-    const user = await User.find({});
+    let user = await User.find({}).populate("cartItem.product");
     return res.json(user);
   } catch (err) {
     res.status(500).send({ message: "User not found." });
@@ -41,6 +41,7 @@ const getAllUsers = async (req, res) => {
 // Get a single User by id
 const getUserById = async (req, res) => {
   const { userId } = req.params;
+
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(404).send({ message: "User not found." }).end();
   }
@@ -58,7 +59,8 @@ const getUserById = async (req, res) => {
 // Add product to cart
 const addProductToBasket = async (req, res) => {
   const { userId, productId } = req.params;
-  const { cartItem } = req.body;
+  // const { cartItem } = req.body;
+  const cartItem = await User.findById({ _id: userId }).populate("cartItem");
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(404).send({ message: "User not found." }).end();
@@ -71,30 +73,53 @@ const addProductToBasket = async (req, res) => {
     if (!user) {
       return res.json({ message: "User not found." });
     }
-    // Get the product from the database
+    // Get the product from the database using the productId
     const product = await Product.findById(productId);
 
     if (!product) {
       return res.json({ message: "Product not found." });
     }
-    console.log("This is: ", productId);
+    // check if the product is available in the stock
+    // if (product.availableInStock < 1) {
+    //   return res
+    //     .status(400)
+    //     .send({ message: "Product is not available in the stock." });
+    // }
 
-    const { cartItem } = user;
-    cartItem.push({
-      id: product._id,
-      productName: product.productName,
-      price: product.price,
+    // Add the product to the cart
+    user.cartItem.push({
+      product: productId,
     });
-
-    // user.cartItem.push({
-    //   id: product._id,
-    //   productName: product.productName,
-    //   price: product.price,
-    // });
-    // console.log(user.cartItem);
-
     await user.save();
-    return res.json(user);
+    return res.json({
+      numOfProducts: cartItem.length,
+      cartItems: cartItem,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "Error occurred." });
+  }
+};
+
+// Detelete product from cart
+const deleteProductFromBasket = async (req, res) => {
+  const { userId, productId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(404).send({ message: "User not found." }).end();
+  }
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(404).send({ message: "Product not found." }).end();
+  }
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.json({ message: "User not found." });
+    }
+    // Get the product from the database using the productId
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.json({ message: "Product not found." });
+    }
   } catch (error) {
     res.status(500).send({ message: "Error occurred." });
   }
