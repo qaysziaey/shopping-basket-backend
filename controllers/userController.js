@@ -67,42 +67,36 @@ const addProductToBasket = async (req, res) => {
     return res.status(404).send({ message: "Product not found." }).end();
   }
   try {
-    const user = await User.findById({ _id: userId });
+    const user = await User.findById(userId);
     if (!user) {
       return res.json({ message: "User not found." });
     }
     // Get the product from the database
-    const product = await Product.findById({ _id: productId });
+    const product = await Product.findById(productId);
+
     if (!product) {
       return res.json({ message: "Product not found." });
     }
+    console.log("This is: ", productId);
 
-    // user.updateOne(
-    //   { _id: userId },
-    //   {
-    //     $push: {
-    //       product: {
-    //         id: product._id,
-    //         productName: product.productName,
-    //         price: product.price,
-    //         quantity: cartItem.quantity,
-    //       },
-    //     },
-    //   }
-    // );
-
-    user.cartItem.push({
-      product: {
-        id: product._id,
-        productName: product.productName,
-        price: product.price,
-        quantity: cartItem.quantity,
-      },
+    const { cartItem } = user;
+    cartItem.push({
+      id: product._id,
+      productName: product.productName,
+      price: product.price,
     });
+
+    // user.cartItem.push({
+    //   id: product._id,
+    //   productName: product.productName,
+    //   price: product.price,
+    // });
+    // console.log(user.cartItem);
+
     await user.save();
     return res.json(user);
   } catch (error) {
-    res.status(500).send({ message: "User not found" });
+    res.status(500).send({ message: "Error occurred." });
   }
 };
 

@@ -6,7 +6,11 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   email: { type: String, required: true },
   profile: { type: String, default: "default.png" },
-  cartItem: [{ product: { type: Schema.Types.ObjectId, ref: "Product" } }],
+  cartItem: [
+    { product: { type: Schema.Types.ObjectId, ref: "Product" } },
+    { productName: { type: String } },
+    { price: { type: Number } },
+  ],
 });
 
 // model the collection
