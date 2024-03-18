@@ -103,7 +103,6 @@ const addProductToBasket = async (req, res) => {
 };
 
 // Remove product from cart
-
 const removeProductFromBasket = async (req, res) => {
   const { userId, productId } = req.params;
 
@@ -133,10 +132,28 @@ const removeProductFromBasket = async (req, res) => {
     res.status(500).send({ message: "Error occurred." });
   }
 };
+
+// Delete all cart items
+const deleteAllCartItems = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.json({ message: "User not found." });
+    }
+    user.cartItem = [];
+    await user.save();
+    return res.json({ message: "All items deleted from the cart." });
+  } catch (error) {
+    res.status(500).send({ message: "Error occurred." });
+  }
+};
+
 module.exports = {
   createNewUser,
   getAllUsers,
   getUserById,
   addProductToBasket,
   removeProductFromBasket,
+  deleteAllCartItems,
 };

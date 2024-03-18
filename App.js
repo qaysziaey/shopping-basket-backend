@@ -13,6 +13,7 @@ const {
   getUserById,
   addProductToBasket,
   removeProductFromBasket,
+  deleteAllCartItems,
 } = require("./controllers/userController");
 const {
   createNewProduct,
@@ -63,6 +64,9 @@ app.post("/sales/sale", createNewSale);
 
 // Get all sales
 app.get("/sales", getAllSales);
+
+// Delete all cart items
+app.delete("/users/:userId/cart", deleteAllCartItems);
 
 const server = app.listen(PORT, () =>
   console.log(`Express app listening on port ${PORT}!`)
